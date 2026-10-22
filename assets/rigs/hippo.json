@@ -1,0 +1,31 @@
+{
+  "id": "hippo",
+  "label": "河马 · 贝斯",
+  "canvas": {
+    "width": 4000,
+    "height": 4000
+  },
+  "layers": [
+    {
+      "id": "body",
+      "src": "assets/layers/hippo/base.png",
+      "pivot": [0.5, 0.95],
+      "parent": null,
+      "z": 0
+    },
+    {
+      "id": "strumHand",
+      "src": "assets/layers/hippo/strumHand.png",
+      "pivot": [0.21, 0.47],
+      "parent": "body",
+      "z": 2
+    },
+    {
+      "id": "head",
+      "src": "assets/layers/hippo/head.png",
+      "pivot": [0.42, 0.44],
+      "parent": "body",
+      "z": 3
+    }
+  ]
+}

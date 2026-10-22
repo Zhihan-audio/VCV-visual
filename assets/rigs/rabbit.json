@@ -1,0 +1,32 @@
+{
+  "id": "rabbit",
+  "label": "兔子 · 小提琴",
+  "canvas": {
+    "width": 4000,
+    "height": 4000
+  },
+  "layers": [
+    {
+      "id": "body",
+      "src": "assets/layers/rabbit/base.png",
+      "pivot": [0.5, 0.95],
+      "parent": null,
+      "z": 0
+    },
+    {
+      "id": "bowArm",
+      "src": "assets/layers/rabbit/bowArm.png",
+      "pivot": [0.31, 0.47],
+      "parent": "body",
+      "z": 3,
+      "offset": [0, -2.5]
+    },
+    {
+      "id": "head",
+      "src": "assets/layers/rabbit/head.png",
+      "pivot": [0.42, 0.43],
+      "parent": "body",
+      "z": 2
+    }
+  ]
+}

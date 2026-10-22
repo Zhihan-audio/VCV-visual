@@ -1,0 +1,38 @@
+{
+  "id": "cat",
+  "label": "猫 · 电子琴",
+  "canvas": {
+    "width": 4000,
+    "height": 4000
+  },
+  "layers": [
+    {
+      "id": "body",
+      "src": "assets/layers/cat/base.png",
+      "pivot": [0.5, 0.95],
+      "parent": null,
+      "z": 0
+    },
+    {
+      "id": "handL",
+      "src": "assets/layers/cat/handL.png",
+      "pivot": [0.41, 0.42],
+      "parent": "body",
+      "z": 3
+    },
+    {
+      "id": "handR",
+      "src": "assets/layers/cat/handR.png",
+      "pivot": [0.59, 0.42],
+      "parent": "body",
+      "z": 3
+    },
+    {
+      "id": "head",
+      "src": "assets/layers/cat/head.png",
+      "pivot": [0.50, 0.38],
+      "parent": "body",
+      "z": 2
+    }
+  ]
+}

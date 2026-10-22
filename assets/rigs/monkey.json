@@ -1,0 +1,31 @@
+{
+  "id": "monkey",
+  "label": "猴子 · 电吉他",
+  "canvas": {
+    "width": 4000,
+    "height": 4000
+  },
+  "layers": [
+    {
+      "id": "body",
+      "src": "assets/layers/monkey/base.png",
+      "pivot": [0.5, 0.95],
+      "parent": null,
+      "z": 0
+    },
+    {
+      "id": "strumArm",
+      "src": "assets/layers/monkey/strumArm.png",
+      "pivot": [0.41, 0.46],
+      "parent": "body",
+      "z": 3
+    },
+    {
+      "id": "head",
+      "src": "assets/layers/monkey/head.png",
+      "pivot": [0.46, 0.41],
+      "parent": "body",
+      "z": 2
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "id": "parrot",
+  "label": "鹦鹉 · 麦克风",
+  "canvas": {
+    "width": 4000,
+    "height": 4000
+  },
+  "layers": [
+    {
+      "id": "body",
+      "src": "assets/layers/parrot/base.png",
+      "pivot": [0.5, 0.95],
+      "parent": null,
+      "z": 0
+    },
+    {
+      "id": "micWing",
+      "src": "assets/layers/parrot/micWing.png",
+      "pivot": [0.69, 0.60],
+      "parent": "body",
+      "z": -1
+    },
+    {
+      "id": "head",
+      "src": "assets/layers/parrot/head.png",
+      "pivot": [0.54, 0.36],
+      "parent": "body",
+      "z": 2
+    }
+  ]
+}

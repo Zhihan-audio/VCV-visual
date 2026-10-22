@@ -1,0 +1,411 @@
+/* ── Forest Band · theme palette (sampled from the watercolor stage backdrop) ──
+   warm wood brown  #b98a52 / #8a6238   stage floor, outlines
+   cream paper      #f8f3e2 / #efe6cc   sidebar, cards
+   moss green       #7ba36b / #5d8450   buttons, sliders, active states
+   light moss       #cfe0c3             chips, dividers
+   ink brown        #4a3f2e             body text
+*/
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: -apple-system, "PingFang SC", sans-serif;
+  color: #4a3f2e;
+}
+
+body {
+  display: flex;
+  flex-direction: row;
+  background: #141712;
+}
+
+/* ── Stage area: full-bleed backdrop, animals lined up on the stage floor ── */
+
+#stage {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #0f120c; /* dark forest fill behind the framed scene */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* The whole background image, shown complete (never cropped): fixed 16:9,
+   sized to fit inside #stage — width-limited on wide windows, height-limited
+   (176vh) on tall ones. Animals are positioned as % of THIS element, so they
+   stay locked to the painted floor regardless of window shape. */
+#stage-scene {
+  position: relative;
+  width: min(100%, 174vh);
+  aspect-ratio: 4096 / 2304;
+  overflow: hidden;
+  /* contain the spotlight blend modes inside the stage */
+  isolation: isolate;
+}
+
+/* ── Stage spotlights (two layers created dynamically by spotlight/spotlight.ts) ──
+   spotlight-dark: #001E80 multiply darkening canvas; the spotlight holes are
+   carved out in real time from OSC;
+   spotlight-warm: #FFE193 lighten warm glow, using the spotlight PNG as a CSS
+   mask so it exists only inside the beam */
+.spotlight-dark {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 40;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+.spotlight-warm {
+  position: absolute;
+  inset: 0;
+  z-index: 41;
+  mix-blend-mode: lighten;
+  pointer-events: none;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  will-change: opacity;
+}
+
+/* ── Animal light & shadow (generated once by spotlight/shading.ts) ──
+   cast-shadow: directional shadow on the floor (silhouette flipped + squashed
+   + skewed, breathing with --light-A)
+   form-shade / form-rim: darkening on the lower body (multiply) and a warm
+   rim toward the light (lighten); both use the animal's own silhouette as a
+   mask so they only affect the sticker pixels */
+.cast-shadow {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  will-change: opacity;
+}
+
+.form-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+.form-rim {
+  position: absolute;
+  inset: 0;
+  z-index: 11;
+  mix-blend-mode: lighten;
+  pointer-events: none;
+}
+
+#spotlight-debug {
+  position: fixed;
+  left: 12px;
+  top: 12px;
+  z-index: 300;
+  background: rgba(10, 14, 8, 0.88);
+  color: #b8e6a0;
+  font: 11px/1.6 ui-monospace, Menlo, monospace;
+  padding: 10px 14px;
+  border-radius: 10px;
+  white-space: pre;
+  min-width: 340px;
+}
+
+/* Background lives on its own layer under the animals, so the stage-light OSC
+   channel can brighten/dim ONLY the backdrop (animals keep their own tone). */
+#stage-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: url('../../../assets/bg/stage.png') center / 100% 100% no-repeat;
+  filter: brightness(var(--bg-brightness, 1));
+  will-change: filter;
+}
+
+/* ── Band placement: front row large, back row small, with some overlap
+   allowed to create depth ──
+   --x: center of the spot (as % of stage width)  --y: height of the feet
+   above the stage front edge
+   --size: scale  --z: stacking order (front row covers back row) */
+
+.animal-frame {
+  position: absolute;
+  left: var(--x);
+  bottom: var(--y);
+  width: var(--size);
+  aspect-ratio: 1 / 1;
+  transform: translateX(-50%);
+  z-index: var(--z);
+  background: transparent;
+}
+
+/* Values computed from each canvas's subject proportions: animals in the same
+   row read as equal height, and --x is corrected to the subject's center.
+   Perspective: back row 0.221 / middle row 0.239 / front row 0.27 (of scene
+   height); the layout was solved so each animal's occluded width ≤ 1/5 of its
+   subject width.
+   Usable floor band (measured on the backdrop): front edge arc ~9% → back
+   edge ~20%; foot lines: front row 9.5 / middle row 13.5 / back row 17.5.
+   --footGap = empty space between the feet and the canvas bottom edge (% of
+   canvas height), used to pin the contact shadow to the feet.
+
+   Back row: bear · snare drum, hippo · bass */
+.animal-bear   {  --x: 39.3%; --y: 15.2%; --size: 17.9%; --z: 1; --footGap: 7.2%; }
+.animal-hippo   {  --x: 74.3%; --y: 17.4%; --size: 16.8%; --z: 2; --footGap: 0.3%; }
+
+/* Middle row: cat · keyboard, owl · drum machine (the pad is a solid object
+   reaching toward the stage front; its front bottom edge is pushed down to
+   land at 10.5%) */
+.animal-cat   {  --x: 29.4%; --y: 12.3%; --size: 18.0%; --z: 3; --footGap: 3.9%; }
+.animal-owl   {  --x: 62.6%; --y: 5.4%; --size: 20.4%; --z: 4; --footGap: 14.0%; }
+
+/* Front row: monkey · electric guitar, parrot · lead vocals (centered on the
+   backdrop's 50% axis), rabbit · violin */
+.animal-monkey   {  --x: 17.2%; --y: 9.1%; --size: 20.0%; --z: 5; --footGap: 1.0%; }
+.animal-parrot   {  --x: 49.7%; --y: 8.2%; --size: 19.6%; --z: 6; --footGap: 3.8%; }
+.animal-rabbit   {  --x: 82.8%; --y: 8.8%; --size: 20.0%; --z: 7; --footGap: 2.0%; }
+
+/* Soft contact shadow under the feet: pinned to each animal's true foot line
+   (--footGap) rather than the canvas bottom edge — otherwise animals with a
+   large gap below their feet (owl 14%, bear 7%) get a detached shadow and
+   look like they're floating */
+.animal-frame::after {
+  content: '';
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: calc(var(--footGap, 0%) - 2.5%);
+  height: 7%;
+  background: radial-gradient(ellipse at center, rgba(58, 38, 16, 0.30), rgba(58, 38, 16, 0) 70%);
+  z-index: 0;
+}
+
+.animal-frame .rig-canvas {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+}
+
+.animal-frame .rig-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  will-change: transform;
+  pointer-events: none;
+  user-select: none;
+}
+
+.animal-frame .rig-layer img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* No text on the stage itself; the names live in the right sidebar */
+.animal-frame .label {
+  display: none;
+}
+
+/* ── Right sidebar ── */
+
+#sidebar {
+  flex: none;
+  width: 312px;
+  height: 100%;
+  overflow-y: auto;
+  background: linear-gradient(180deg, #f8f3e2 0%, #f3ecd6 100%);
+  border-left: 6px solid #b98a52;
+  padding: 16px 14px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+#sidebar::-webkit-scrollbar {
+  width: 8px;
+}
+
+#sidebar::-webkit-scrollbar-thumb {
+  background: #d9c9a3;
+  border-radius: 4px;
+}
+
+#sidebar-head {
+  text-align: center;
+  padding: 4px 0 2px;
+}
+
+#sidebar-head h1 {
+  margin: 0;
+  font-size: 20px;
+  letter-spacing: 4px;
+  color: #5d4a32;
+}
+
+#sidebar-head p {
+  margin: 4px 0 0;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #a08d6a;
+}
+
+/* ── OSC monitor panel (top of the sidebar) ── */
+
+.osc-monitor {
+  background: #fffdf4;
+  border: 1px solid #e3d7b8;
+  border-radius: 14px;
+  padding: 10px 12px;
+  font-size: 12px;
+  box-shadow: 0 2px 6px rgba(122, 96, 58, 0.08);
+}
+
+.osc-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  color: #5d4a32;
+}
+
+.osc-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #c46a52;
+  box-shadow: 0 0 5px rgba(196, 106, 82, 0.7);
+  flex: none;
+}
+
+.osc-dot.on {
+  background: #6fae5c;
+  box-shadow: 0 0 6px rgba(111, 174, 92, 0.8);
+}
+
+.osc-count {
+  margin-left: auto;
+  font-weight: 400;
+  color: #a08d6a;
+}
+
+.osc-last {
+  margin: 7px 0;
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 11px;
+  color: #5d8450;
+  word-break: break-all;
+  min-height: 14px;
+}
+
+.osc-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.osc-chip {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #efe6cc;
+  color: #8f7d5c;
+  font-size: 11px;
+  transition: background 0.12s, color 0.12s;
+}
+
+.osc-chip.active {
+  background: #7ba36b;
+  color: #fffdf4;
+}
+
+/* ── Per-animal control card ── */
+
+#test-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.test-card {
+  background: #fffdf4;
+  border: 1px solid #e3d7b8;
+  border-radius: 14px;
+  padding: 10px 12px 12px;
+  font-size: 12px;
+  box-shadow: 0 2px 6px rgba(122, 96, 58, 0.08);
+}
+
+.test-card h3 {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #5d4a32;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.test-card h3::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #7ba36b;
+  flex: none;
+}
+
+.test-card label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0;
+  color: #8f7d5c;
+}
+
+.test-card label span {
+  min-width: 52px;
+  font-size: 11px;
+}
+
+.test-card input[type="range"] {
+  flex: 1;
+  accent-color: #6f9d62;
+}
+
+.test-card button {
+  background: #7ba36b;
+  border: none;
+  color: #fffdf4;
+  padding: 5px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 12px;
+  letter-spacing: 1px;
+  box-shadow: 0 2px 4px rgba(93, 132, 80, 0.25);
+  transition: background 0.12s, transform 0.08s;
+}
+
+.test-card button:hover {
+  background: #6a9159;
+}
+
+.test-card button:active {
+  background: #5d8450;
+  transform: translateY(1px);
+}

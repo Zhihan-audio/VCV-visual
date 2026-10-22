@@ -1,0 +1,38 @@
+{
+  "id": "owl",
+  "label": "猫头鹰 · 鼓机",
+  "canvas": {
+    "width": 1181,
+    "height": 1181
+  },
+  "layers": [
+    {
+      "id": "body",
+      "src": "assets/layers/owl/base.png",
+      "pivot": [0.5, 0.95],
+      "parent": null,
+      "z": 0
+    },
+    {
+      "id": "fingerL",
+      "src": "assets/layers/owl/fingerL.png",
+      "pivot": [0.42, 0.40],
+      "parent": "body",
+      "z": -1
+    },
+    {
+      "id": "fingerR",
+      "src": "assets/layers/owl/fingerR.png",
+      "pivot": [0.58, 0.40],
+      "parent": "body",
+      "z": 1
+    },
+    {
+      "id": "head",
+      "src": "assets/layers/owl/head.png",
+      "pivot": [0.48, 0.44],
+      "parent": "body",
+      "z": 2
+    }
+  ]
+}

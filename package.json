@@ -1,0 +1,21 @@
+{
+  "name": "animal-band-osc",
+  "version": "0.1.0",
+  "description": "7 animal musicians 2D rig animation, driven by VCV Rack via OSC",
+  "main": "dist/main/index.js",
+  "scripts": {
+    "build:main": "tsc -p tsconfig.main.json",
+    "build:renderer": "tsc -p tsconfig.json",
+    "build": "npm run build:main && npm run build:renderer",
+    "start": "npm run build && electron .",
+    "dev": "npm run build && electron . --dev"
+  },
+  "dependencies": {
+    "node-osc": "^9.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "electron": "^28.2.0",
+    "typescript": "^5.3.3"
+  }
+}
